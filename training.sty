@@ -1,0 +1,103 @@
+% Reset page margin to 1 inch on all four sides
+\usepackage[margin=1in]{geometry}
+
+% Tell LaTeX to treat _ as text rather than subscript symbol
+\usepackage{underscore}
+
+% Tilde is a pain-in-the-ass in LaTeX. The compromise is \hm
+%//ref https://tex.stackexchange.com/questions/312/correctly-typesetting-a-tilde
+\usepackage{textcomp}
+\newcommand{\hm}{\raisebox{0.5ex}{\texttildelow}}
+
+% Coloured boxes
+\usepackage{tcolorbox}
+\tcbset{before upper={\parindent0in}} % No paragraph indentation within box
+% Background knowledge
+\definecolor{Postitblue}{RGB}{122,252,255}
+\newtcolorbox{know}[1]{colback=Postitblue,colframe=Postitblue,title=\noindent\textcolor{black}{\textbf{#1}}}
+% Post-it notes
+\definecolor{Postitbuff}{RGB}{254,255,156}
+\newtcolorbox{note}[1]{colback=Postitbuff,colframe=Postitbuff,title=\noindent\textcolor{black}{\textbf{#1}}}
+% Caution
+\definecolor{Postitpink}{RGB}{255,126,185}
+\newtcolorbox{caution}[1]{colback=Postitpink,colframe=Postitpink,title=\noindent\textcolor{black}{\textbf{#1}}}
+
+% R code
+\definecolor{Rblue}{RGB}{36,106,191}
+\definecolor{Rgray}{RGB}{190,190,190}
+\newtcolorbox{Rcode}[1]{colback=Rblue!5!white,colframe=Rblue,title=\noindent \textcolor{Rgray}{\textbf{\texttt{R>}} #1}}
+% Python script
+\definecolor{Pyyellow}{RGB}{255,210,65}
+\definecolor{Pyblue}{RGB}{54,105,148}
+\newtcolorbox{Py}[1]{colback=Pyyellow!5!white,colframe=Pyyellow,title=\noindent \textcolor{Pyblue}{\textbf{\texttt{>>>}} #1}}
+% Shell command
+\definecolor{Bashblack}{RGB}{43,53,57}
+% Bashwhite is just white, so no need to define any new colour here.
+\newtcolorbox{Sh}[1]{colback=Bashblack!5!white,colframe=Bashblack,title=\noindent \textbf{\texttt{\$}} #1}
+% Vim text
+\definecolor{Vimgreen}{RGB}{0,127,0}
+\definecolor{Vimgray}{RGB}{204,204,204}
+\newtcolorbox{Vim}[1]{colback=Vimgreen!5!white,colframe=Vimgreen,title=\noindent \textcolor{Vimgray}{\textbf{\texttt{>}} #1}}
+
+\newcommand{\bxr}[2]{
+    \begin{Rcode}{#1}
+        \begin{verbatim}
+            #2
+        \end{verbatim}
+    \end{Rcode}
+}
+
+\newcommand{\bxpy}[2]{
+    \begin{Py}{#1}
+        \begin{verbatim}
+            #2
+        \end{verbatim}
+    \end{Py}
+}
+
+\newcommand{\bxsh}[2]{
+    \begin{Sh}{#1}
+        \begin{verbatim}
+            #2
+        \end{verbatim}
+    \end{Sh}
+}
+
+\newcommand{\bxvim}[2]{
+    \begin{Vim}{#1}
+        \begin{verbatim}
+            #2
+        \end{verbatim}
+    \end{Vim}
+}
+
+% Define commonly used computer package
+% Convert pt to mm: s pt = s x 25.4/72.27
+\newcommand{\cR}{\raisebox{-0.1em}{\includegraphics[height=0.9em]{Figures/R.png}}\ }
+\newcommand{\CR}{\raisebox{-0.1em}{\includegraphics[height=0.9em]{Figures/R.png}}}
+
+\newcommand{\pk}[1]{\textsf{#1}}
+
+\newcommand{\cPy}{\raisebox{-0.3em}{\includegraphics[height=1em]{Figures/Python.png}}\ }
+\newcommand{\CPy}{\raisebox{-0.3em}{\includegraphics[height=1em]{Figures/Python.png}}}
+
+\newcommand{\cVim}{\raisebox{-0.333em}{\includegraphics[height=1.1em]{Figures/Vim.png}}\ }
+\newcommand{\CVim}{\raisebox{-0.333em}{\includegraphics[height=1.1em]{Figures/Vim.png}}}
+
+\newcommand{\cUbuntu}{\raisebox{-0.3em}{\includegraphics[height=1.1em]{Figures/Ubuntu.png}}\ }
+\newcommand{\CUbuntu}{\raisebox{-0.3em}{\includegraphics[height=1.1em]{Figures/Ubuntu.png}}}
+
+\newcommand{\cLinux}{\raisebox{-0.2em}{\includegraphics[height=1.1em]{Figures/Linux.png}}\ }
+\newcommand{\CLinux}{\raisebox{-0.2em}{\includegraphics[height=1.1em]{Figures/Linux.png}}}
+
+\newcommand{\cBash}{\includegraphics[height=1.1em]{Figures/Bash.png}\ }
+\newcommand{\CBash}{\includegraphics[height=1.1em]{Figures/Bash.png}}
+
+\newcommand{\cGit}{\includegraphics[height=1.1em]{Figures/Git.png}\ }
+\newcommand{\CGit}{\includegraphics[height=1.1em]{Figures/Git.png}}
+
+\newcommand{\cGithub}{\includegraphics[height=1.1em]{Figures/Git.png}\ }
+\newcommand{\CGithub}{\includegraphics[height=1.1em]{Figures/Git.png}}
+
+\newcommand{\cM}{\raisebox{-0.333em}{\includegraphics[height=1.1em]{Figures/Mplus.png}}\ }
+\newcommand{\CM}{\raisebox{-0.333em}{\includegraphics[height=1.1em]{Figures/Mplus.png}}}

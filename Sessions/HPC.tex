@@ -1,0 +1,276 @@
+\section{Build an \cUbuntu machine on HPC}
+
+\bxsh{Login to NREC HPC facility}{ssh -i \hm/.ssh/id_rsa ubuntu@158.37.63.141}
+
+\subsection{Install \cR and associated packages}
+
+\bxsh{Let \cUbuntu know from which list to download the latest \cR (using \CVim)}{sudo vim /etc/apt/sources.list}
+
+\bxvim{Add \cR repo}{
+    deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/\\
+    deb http://ftp.uninett.no/ubuntu/ bionic-backports main restricted universe
+}
+
+\begin{caution}{Attention}
+    The second line starts with ``http'', \emph{not} ``https''.
+\end{caution}
+
+\bxsh{Let \cUbuntu know this key is authentic so don't freak out about security}{
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+}
+
+\bxsh{Install \CR}{
+    sudo apt-get update\\
+    sudo apt-get install r-base
+}
+
+\bxsh{Install some \cLinux libraries in order to enable \cR to build its own packages}{
+    sudo apt-get install libgsl-dev libgit2-dev libssl-dev libcurl4-openssl-dev libxml2-dev libudunits2-dev libfontconfig1-dev libcairo2-dev libgeos-dev libgdal-dev libgmp_dev libharfbuzz-dev libfribidi-dev
+}
+
+\bxsh{Get into \CR}{R}
+
+\bxr{Install the first package}{
+    install.packages("data.table", dependencies = TRUE)
+}
+
+\begin{note}{\CR's personal library}
+Answer yes to both questions so that a personal library can be created and installation process can begin.
+\end{note}
+
+\bxsh{Install \CGit}{
+    sudo apt install git\\
+    git config --global user.name "Tony Tan"\\
+    git config --global user.email "tctan@uio.no"
+}
+
+\bxsh{Manually install an \cR package \pk{colorout} because it is not in \pk{CRAN}}{
+    git clone https://github.com/jalvesaq/colorout.git\\
+    R CMD INSTALL colorout
+}
+
+\bxsh{Tell \cR to automatically load \pk{colorout} each time it starts}{
+    cd\\
+    touch .Rprofile
+}
+
+\bxsh{Open \pk{.Rprofile} using \CVim}{
+    vim .Rprofile
+}
+
+\bxvim{Autoload \cR packages}{
+    old <- getOption("defaultPackages")\\
+    options(defaultPackages = c(old, "colorout"))
+}
+
+\bxsh{Install Java Developer Kit}{
+    sudo apt-get install default-jre default-jdk\\
+    sudo R CMD javareconf
+}
+
+\bxsh{Go back to \cR and continue installing packages}{R}
+
+\begin{note}{You may be interested in the following \cR packages}
+\begin{itemize}
+    \item \pk{BiocManager}: enable package installation from Bioconductor
+    \item \pk{remotes}: enable package installation from github
+    \item \pk{Orcs}: manage working directories for multiple operating systems
+    \item \pk{MplusAutomation}: link \cR with \pk{Mplus}
+    \item \pk{intsvy}: for analysing ILSA data
+    \item \pk{mice}, \pk{micemd}, \pk{miceadds}, \pk{jomo}: for multiple imputation
+    \item \pk{ggplot2}, \pk{tidyr} etc.: commonly used \cR packages
+    \item \pk{rhdf5}: \pk{MplusAutomation} needs this to function. N.B. This package must be installed from \pk{Bioconductor}
+\end{itemize}
+\end{note}
+
+\bxr{Continue package installation}{
+    install.packages(c("BiocManager", "remotes", "Orcs", "MplusAutomation", "intsvy", "mice", "micemd", "miceadds", "jomo", "ggplot2", "tidyr", "dplyr", "tibble", "stringr", "shiny", "shinythemes", "modelr", "mlr"; "readr"), dependencies = TRUE)\\
+    BiocManager::install("rhdf5")
+}
+
+\begin{note}{\cR colouration}
+Now you should see \cR output in different colours.
+\end{note}
+
+
+\bxr{Update all packages, then quit \CR}{
+    update.packages(ask = FALSE, checkBuilt = TRUE)\\
+    q()\\
+    n
+}
+
+\subsection{Install necessary \cPy packages}
+
+\subsubsection{Install \pk{pip}}
+
+\bxsh{Check which version of \cPy HPC already has}{
+    python3 --version
+}
+
+\begin{note}{\cPy version}
+    You should see a one-line output ``Python 3.8.5''
+\end{note}
+
+\bxsh{Install \pk{pip}}{
+    sudo apt install python3-pip
+}
+
+\subsubsection{Install \pk{radian}}
+
+\bxsh{Install \pk{radian}}{
+    pip3 install -U radian
+}
+
+\begin{note}{Add \pk{radian} to path}
+    We need to tell \cLinux where \pk{radian} lives so that it can be triggered automatically each time we type ``r'' shorcut. We need to modify two files: \pk{.profile} and \pk{.bashrc}.
+\end{note}
+
+\bxsh{Get into \pk{.profile}}{
+    vim .profile
+}
+
+\bxvim{Add \pk{radian} path to \pk{.profile}}{
+    \# Use radian to better manage R interface\\
+    export PATH=\$PATH:/home/ubuntu/.local/bin/
+}
+
+\bxsh{Get into \pk{.bashrc}}{
+    vim .bashrc
+}
+
+\bxvim{Create some shortcuts}{
+
+    \# Use r key as shortcut to radian\\
+    alias r="radian"\\
+
+    \# Update Python3\\
+    alias pyupdate="sudo pip3 list --outdated --format=freeze | grep -v '\textasciicircum\textbackslash -e' | cut -d = -f 1 | xargs -n1 pip3 install -U"\\
+
+    \# Create shortcut to UiO M Drive\\
+    alias m="sshfs tctan@login.uio.no: ~/uio -o reconnect,modules=iconv,from_code=ISO-8859-1,ConnectTimeout=10"
+}
+
+\bxsh{Create a new file \pk{.bash_profile}}{
+    touch .bash_profile
+}
+
+\bxvim{Bring \pk{.profile} and \pk{.bashrc} together}{
+    . \hm/.profile\\
+    . \hm/.bashrc
+}
+
+\bxsh{Refresh these files}{
+    source .bash_profile\\
+    source .profile\\
+    source .bashrc
+}
+
+\subsubsection{Update \CPy}
+
+\bxsh{Install some \cLinux libraries so that \cPy will not complain}{
+    sudo apt install python3-testresources libcups2-dev libgirepository1.0-dev libparted-dev
+}
+
+\bxsh{Update \CPy}{
+    pyupdate
+}
+
+\subsection{Link UiO M Drive to HPC}
+
+\bxsh{Create a receiving folder named ``uio'' in the home directory}{
+    mkdir uio
+}
+
+\bxsh{Install \pk{sshfs}}{
+    sudo apt install sshfs
+}
+
+\bxsh{Login to M Drive using shortcut ``m''}{
+    m
+}
+
+\begin{note}{ECDSA key fingerprint}
+    Type ``yes'' to the warning:
+
+    The authenticity of host 'login.uio.no (129.240.12.7)' can't be established.
+
+    ECDSA key fingerprint is SHA256:efy2GuDcvOC2HEe0PwkuCaYVL8tKC77Bi8uHM+m4K6s.
+
+    Are you sure you want to continue connecting (yes/no/[fingerprint])?
+
+    \bigskip
+
+    If you receive ``read: Connection reset by peer'', type shortcut ``m'' again to re-connect---it only happens the very first time M Drive is established.
+\end{note}
+
+\subsection{Install \cM}
+
+\begin{caution}{Switch to local}
+    Switch back to local \cLinux home directory for the following steps. (If you are in HPC environment, type ``exit'' to switch back to local machine.)
+\end{caution}
+
+\bxsh{Get into \pk{.bashrc}}{
+    vim .bashrc
+}
+
+\bxvim{Link local \cLinux to HPC}{
+    \# Logon to HPC\\
+    alias hpc="ssh -i \hm/.ssh/id_rsa ubuntu@158.37.63.141"
+}
+
+\bxsh{Renew \pk{.bashrc} and push some local files to HPC}{
+    source .bashrc
+}
+
+\begin{caution}{Switch to HPC}
+    Now switch back to HPC terminal. (In local environment, type ``hpc'' to switch to HPC.)
+\end{caution}
+
+\bxsh{Copy \cM installer from M Drive to home directory}{
+    m\\
+    (Type your UiO M Drive password)\\
+    cp /home/tony/uio/pc/Dokumenter/ComboLinux64.bin /home/tony/
+}
+
+\bxsh{Set up \cM installation folder}{
+    cd /opt\\
+    sudo mkdir mplus\\
+    sudo chmod 777 mplus\\
+    cd mplus\\
+    sudo mkdir 8.5\\
+    sudo chmod 777 8.5\\
+    cd
+}
+
+\bxsh{Install \cM}{
+    chmod a+x ComboLinux64.bin\\
+    ./ComboLinux64.bin
+}
+
+\begin{note}{Accept all default settings}
+    Follow instructions on the screen. Press ENTER when asked.
+\end{note}
+
+\subsection{Update and reboot HPC}
+
+\bxsh{Update and reboot}{
+    sudo apt-get update\\
+    sudo apt-get upgrade\\
+    sudo reboot
+}
+
+\begin{note}{Let HPC reboot}
+    Give a couple of minutes for HPC to reboot. Then your HPC would be ready.
+\end{note}
+
+\subsection{Interact with HPC from local \cLinux computer}
+
+\bxsh{Logon to HPC via shortcut}{
+    hpc
+}
+
+\bxsh{Monitor HPC performance}{
+    hpc\\
+    htop
+}
+

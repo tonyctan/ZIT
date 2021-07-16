@@ -1,0 +1,20 @@
+1. Download powerline
+
+$ sudo apt install powerline
+
+2. Add this block to ~/.bashrc
+
+powerline-daemon -q
+POWERLINE_BASH_CONTINUATION=1
+POWERLINE_BASH_SELECT=1
+source /usr/share/powerline/bindings/bash/powerline.sh
+
+3. Install powerine gitstatus
+
+$ apt install powerline-gitstatus
+
+4. Install powerline fonts by navigating to Resource/Fonts/powerline fonts/
+$ ./install.sh
+
+5. Configure powerline gitstatus
+Copy Resource/.config/powerline/ folder under ~/.config/

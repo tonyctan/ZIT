@@ -1,0 +1,75 @@
+\section{Set up UiO Github}
+
+\subsection{Go to UiO Github}
+
+Type
+
+\[ \texttt{github.uio.no} \]
+
+in the address bar of your chosen browser (eg, Firefox or Chrome).
+
+\subsection{Log in}
+
+You do not need to create a new user profile because everything is already done for you by the university. Simply login as you do in any UiO IT service.
+
+\subsection{Create a new repository}
+
+Click either the grey button [Start a project] or the green button [New]. You should enter a new page.
+
+Leave [Owner] unchanged. (It is your UiO login).
+
+For the [Repository name*] field, give your Github repository a name. Mine is called ``CEMO-master-thesis''.
+
+Under [Description (optional)], I typed ``A repository of my CEMO master thesis''
+
+Leave it as [Public].
+
+Check [Initialize this repository with a README].
+
+Click [Create repository].
+
+
+
+
+\section{Set up local folder}
+
+\subsection{Initialise the local folder}
+
+git init
+
+\subsection{Create an exception list}
+
+.gitignore
+
+\subsection{Add all files to the watch list}
+
+git add .
+
+
+
+
+\section{Sync local folder to UiO Github}
+
+\subsection{Tell your local folder the URL of Github}
+
+git remote add origin https://github.uio.no/tctan/CEMO-master-thesis.git
+
+\subsection{Pull Github to local folder}
+
+git pull origin master
+
+Type your [Username] and [Password]
+
+\subsection{Commit to this Pull procedure}
+
+git commit -m ``Prepare for Github''
+
+\subsection{Push local folder to Github}
+
+git push -u origin master
+
+
+
+
+
+

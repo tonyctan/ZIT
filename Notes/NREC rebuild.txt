@@ -1,0 +1,127 @@
+Step 1 Login to NREC HPC
+    $ ssh -i ~/.ssh/id_rsa ubuntu@158.37.63.141
+
+Step 2 Install R
+
+Step 2.1 Let Ubuntu know from which list to download the latest R
+    $ sudo vim /etc/apt/sources.list
+Add these two lines to [sources.list]
+            ===[Begin text]===
+    deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/
+    deb http://ftp.uninett.no/ubuntu/ bionic-backports main restricted universe
+            ===[End text]===
+Attention: the second line starts with "http", NOT "https".
+
+Step 2.2 Let Ubuntu know this key is authentic so don't freak out about security
+    $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+
+Step 2.3 Install R
+    $ sudo apt-get update
+    $ sudo apt-get install r-base
+
+Step 2.4 Install some Linux libraries in order to enable R to build its own packages
+    $ sudo apt-get install libgsl-dev libgit2-dev libssl-dev libcurl4-openssl-dev libxml2-dev libudunits2-dev libfontconfig1-dev libcairo2-dev libgeos-dev libgdal-dev libgmp_dev libharfbuzz-dev libfribidi-dev
+
+Step 2.5 Get into R and install the first packagae
+    $ R
+    R> install.packages("data.table", dependencies = TRUE)
+Answer yes to both questions so that a personal library can be created and installation process can begin.
+
+Step 2.6 Manually install an R package "colorout" because it is not in CRAN
+    $ git clone https://github.com/jalvesaq/colorout.git
+    $ R CMD INSTALL colorout
+(If git has not been installed, follow screen prompt to install it.)
+
+Step 2.7 Java Developer Kit needs to be installed for rJava to work
+    $ sudo apt-get install default-jre default-jdk
+    $ sudo R CMD javareconf
+
+Step 2.8 Tell R to automatically load "colorout" package each time it starts
+Make sure you are back to your home folder. If not, type
+    $ cd
+Create an empty file called ".Rprofile"
+    $ touch .Rprofile
+Open this file in Vim
+    $ vim .Rprofile
+and paste these two lines in
+            ===[Begin text]===
+    old <- getOption("defaultPackages")
+    options(defaultPackages = c(old, "colorout"))
+            ===[End text]===
+
+Step 2.9 Go back to R and continue installing packages
+    $ R
+    R> install.packages(c("Orcs", "languageserver"), dependencies = TRUE)
+Now you should see R output in different colours.
+Install more commonly used packages:
+    R> install.packages(c("ggplot2", "tidyr", "dplyr", "tibble", "stringr", "shiny", "shinythemes", "modelr", "mlr"; "readr"), dependencies = TRUE)
+For PISA and other ILSA studies, install "intsvy". Multiple imputation needs "mice", "micemd", "miceadds" and "jomo"
+    R> install.packages(c("intsvy", "mice", "micemd", "miceadds", "jomo"), dependencies = TRUE)
+
+Step 2.10 Update all packages, then quit R
+    R> update.packages(ask = FALSE, checkBuilt = TRUE)
+    R> q()
+    R> n
+
+Step 3 Python
+
+Step 3.1 Install Python-related packages, espeically "pip3"
+NREC HPC should already have a relatively new version of Python (e.g., 3.8.5) installed. Check first:
+    $ python3 --version
+You should see a one-line output "Python 3.8.5".
+But "pip3" is not yet installed. Need to address this problem first
+    $ sudo apt install python3-pip
+
+Step 3.2 Install "radian" to better manage R interface
+    $ pip3 install -U radian
+Install more libraries so that Python update will not complain:
+    $ sudo apt install python3-testresources libcups2-dev libgirepository1.0-dev libparted-dev
+
+Step 3.3 Add radian to path
+    $ vim .profile
+Insert the following lines to the end of .profile
+            ===[Begin text]===
+    # Use radian to better manage R interface
+    export PATH=$PATH:/home/ubuntu/.local/bin/
+            ===[End text]===
+Insert the following lines to the end of .bashrc
+            ===[Begin text]===
+    # Press lower case r to trigger R interface
+    alias r="radian"
+
+    # Update Python3
+    alias pyupdate="sudo pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U"
+
+    # Create a shortcut to copy files from HPC back to local Linux computer
+    function totony() {
+        scp $1 tony@129.240.112.183:
+    }
+            ===[End text]===
+
+Step 3.4 Bring .profile and .bashrc together in .bash_profile
+    $ touch .bash_profile
+Insert the following lines to this newly created file
+            ===[Begin text]===
+    . ~/.profile
+    . ~/.bashrc
+            ===[End text]===
+Return to shell. Refresh these three files:
+    $ source .bashrc .profile .bash_profile
+
+Step 4: DO THIS STEP FROM THE LOCAL MACHINE, NOT IN THE HPC SHELL
+Copy-paste existing .radian_profile from local Linux Mint to HPC
+Open another shell by pressing Ctrl + Alt + t from a blank area
+Type
+    $ vim .bashrc
+Paste the following lines to .bashrc
+            ===[Begin text]===
+
+            ===[End text]===
+Return to shell, then type
+    $ tohpc .radian_profile
+
+Step 4: RETURN TO HPC SHELL
+Update and upgrade all Linux libraries/packages, then disconnect from NREC
+    $ sudo apt-get update
+    $ sudo apt-get upgrade
+    $ exit

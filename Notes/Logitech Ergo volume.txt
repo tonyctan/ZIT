@@ -1,0 +1,31 @@
+https://www.linuxuprising.com/2019/11/how-to-bind-mouse-buttons-to-keyboard.html
+
+You can use xbindkeys and xdotool to do this.
+
+    Install
+
+    sudo apt-get install xbindkeys xdotool
+
+    Create a a default ~/.xbindkeysrc
+
+    xbindkeys -d > ~/.xbindkeysrc
+
+    In the ~/.xbindkeysrc, add these lines:
+
+    # Adjust volume with mouse buttons
+    "xdotool key XF86AudioLowerVolume"
+        b:8
+    "xdotool key XF86AudioRaiseVolume"
+        b:9
+
+    Start xbindkeys
+
+    xbindkeys
+
+    The buttons will now adjust volume
+
+    In Startup Applications, add an entry to autostart xbindkeys on login:
+        Name: xbindkeys
+        Command: xbindkeys_autostart
+
+

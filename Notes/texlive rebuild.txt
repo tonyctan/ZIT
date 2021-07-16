@@ -1,0 +1,38 @@
+# Remove old TeXLive installations
+sudo apt-get purge texlive*;
+sudo rm -rf /usr/local/texlive/*;
+rm -rf ~/.texlive*;
+sudo rm -rf /usr/local/share/texmf;
+sudo rm -rf /var/lib/texmf;
+sudo rm -rf /etc/texmf;
+sudo apt-get remove tex-common --purge;
+rm -rf ~/.texlive;
+
+find -L /usr/local/bin/ -lname /usr/local/texlive/*/bin/* | xargs rm;
+find -L /usr/local/bin/ -lname /usr/local/texlive/*/bin/* | sudo xargs rm;
+
+# Remove any failed attempt at installing TeXLive 2021
+#rm -rf /usr/local/texlive/2021;
+#rm -rf ~/.texlive2021;
+
+
+# Download the latest TeXLive 2021
+#http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+# Or go to https://www.tug.org/texlive/acquire-netinstall.html
+# for further instruction
+# Once unzip tl      [ID]   nzipped folder, then open a terminal IN THAT FOLDER
+cd /your/unp texlive [ID]
+sudo perl install-tl
+#[... messages omitted ...]
+#Enter command: i
+#[... when done, see below for post-install ...]
+-- INSERT --
+
+# Go to folder /etc/profile.d
+# Create file texlive2021.sh
+# Copy-paste the following lines to texlive2021.sh and save
+export PATH=/usr/local/texlive/2021/bin/x86_64-linux:$PATH
+export MANPATH=/usr/local/texlive/2021/texmf-dist/doc/man:$MANPATH
+export INFOPATH=/usr/local/texlive/2021/texmf-dist/doc/info:$INFOPATH
+
+# Done! Oh, remember to reboot Linux.

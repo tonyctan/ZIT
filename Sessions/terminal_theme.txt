@@ -1,0 +1,7 @@
+1. Pre-install
+$ sudo apt-get install dconf-cli uuid-runtime
+
+2. Install
+$ bash -c "$(wget -qO- https://git.io/vQgMr)"
+
+3. Type "ALL" then enter
